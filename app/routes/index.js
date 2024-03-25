@@ -4,6 +4,7 @@
 // var comment = require('./comment');
 var product = require('./product');
 var brand = require('./brand');
+var user = require('./user');
 
 module.exports = function (app) {
 
@@ -20,5 +21,6 @@ module.exports = function (app) {
     })
     product(app)
     brand(app)
+    user(app)
 
 };
