@@ -47,13 +47,41 @@ exports.createProduct = async (req, body = {}) => {
 exports.allProduct = async () => {
     try {
         let data = await models.find()
-        console.log("data");
+            .populate('brand_id', 'name') // Lấy ra trường 'name' từ collection 'Brands' tương ứng với 'brand_id'
+            .populate('size_id', 'name') // Lấy ra trường 'name' từ collection 'Sizes' tương ứng với 'size_id'
+            .exec(); // Thực thi truy vấn và trả về kết quả
+
+        // In ra dữ liệu trả về
+        console.log(data);
+
         return Promise.resolve(data);
     } catch (error) {
         console.log(error);
         return Promise.reject({ show: true, message: "Có lỗi xảy ra, xin vui lòng thử lại" });
     }
 }
+
+// Hiển thị sản phầm theo nhãn hiệu
+exports.ProductByBrand = async (brand_id) => {
+    try {
+        // Tìm kiếm các sản phẩm dựa trên brand_id
+        let data = await models.find({ brand_id: brand_id })
+            .populate('brand_id', 'name') // Lấy ra trường 'name' từ collection 'Brands' tương ứng với 'brand_id'
+            .populate('size_id', 'name') // Lấy ra trường 'name' từ collection 'Sizes' tương ứng với 'size_id'
+            .exec(); // Thực thi truy vấn và trả về kết quả
+
+        // In ra dữ liệu trả về
+        console.log(data);
+
+        // Trả về kết quả cho người dùng
+        return Promise.resolve(data);
+    } catch (error) {
+        // Xử lý lỗi
+        console.log(error);
+        return Promise.reject({ show: true, message: "Có lỗi xảy ra, xin vui lòng thử lại" });
+    }
+}
+
 exports.updateProduct = async (id, body = {}) => {
     try {
         const image = req.file.path; // Đường dẫn của hình ảnh đã được lưu trữ trong req.file
@@ -76,6 +104,33 @@ exports.deleteProduct = async (id) => {
         return Promise.resolve(deleted);
     } catch (error) {
         console.error("Error delete product:", error);
+        return Promise.reject({ show: true, message: "Có lỗi xảy ra, xin vui lòng thử lại" });
+    }
+}
+
+exports.SearchProduct = async (search) => {
+    try {
+
+        // Tìm kiếm trong cơ sở dữ liệu
+        let result = await models.find({
+            $or: [
+                { name: { $regex: search, $options: 'i' } },
+                // { phone: { $regex: search, $options: 'i' } },
+                // { role: { $regex: search, $options: 'i' } },
+                // { email: { $regex: search, $options: 'i' } },
+            ]
+        });
+
+        // Kiểm tra kết quả trả về
+        if (result.length === 0) {
+            return Promise.reject({ show: true, message: "Có lỗi xảy ra, xin vui lòng thử lại" });
+        }
+
+        // Trả về kết quả cho người dùng
+        return Promise.resolve(result);
+    } catch (error) {
+        // Xử lý lỗi
+        console.log(error);
         return Promise.reject({ show: true, message: "Có lỗi xảy ra, xin vui lòng thử lại" });
     }
 }

@@ -7,8 +7,10 @@ const productSchema = mongoose.Schema({
     status: { type: String },
     image: { type: String, require: true }, // Lưu trữ đường dẫn của hình ảnh
     price: { type: String },
-    brand_id: { type: mongoose.Schema.Types.ObjectId, ref: 'Nguoidung' },
-    size_id: { type: mongoose.Schema.Types.ObjectId, ref: 'Diachi' }
+    sellingPrice: { type: String },
+    numberInStock: { type: String },
+    brand_id: { type: mongoose.Schema.Types.ObjectId, ref: 'Brands' },
+    size_id: { type: mongoose.Schema.Types.ObjectId, ref: 'Sizes' }
 }, { timestamps: true }); // Thêm timestamps vào schema)
 
 productSchema.plugin(aggregatePaginate);

@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const aggregatePaginate = require('mongoose-aggregate-paginate');
 
 const brandSchema = mongoose.Schema({
-    brandName: { type: String, required: true },
+    name: { type: String, required: true },
     emailBrand: { type: String, required: true },
     phoneNumber: { type: String, required: true },
     adress: { type: String, required: true },

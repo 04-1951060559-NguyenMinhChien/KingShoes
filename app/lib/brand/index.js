@@ -16,10 +16,10 @@ let models = require('../../models/brands');
 exports.createBrand = async (data, body = {}) => {
     try {
         let errors = [];
-        const { brandName, emailBrand, phoneNumber, adress, image } = data;
+        const { name, emailBrand, phoneNumber, adress } = data;
         // console.log("non the nho", data);
-        if (brandName && emailBrand && phoneNumber) {
-            let checkExists1 = await models.findOne({ brandName });
+        if (name && emailBrand && phoneNumber) {
+            let checkExists1 = await models.findOne({ name });
             let checkExists2 = await models.findOne({ emailBrand });
             let checkExists3 = await models.findOne({ phoneNumber });
             if (checkExists1 && checkExists2 && checkExists3) {
@@ -28,7 +28,7 @@ exports.createBrand = async (data, body = {}) => {
             }
         }
         // Thực hiện tạo sản phẩm
-        let created = await models.create({ brandName, emailBrand, phoneNumber, adress, image });
+        let created = await models.create({ name, emailBrand, phoneNumber, adress });
 
         // Trả về thông báo thành công nếu tạo sản phẩm thành công
         return Promise.resolve(created);
@@ -65,6 +65,33 @@ exports.deleteBrand = async (id) => {
         return Promise.resolve(deleted);
     } catch (error) {
         console.error("Error delete Brand:", error);
+        return Promise.reject({ show: true, message: "Có lỗi xảy ra, xin vui lòng thử lại" });
+    }
+}
+
+exports.searchBrand = async (search) => {
+    try {
+
+        // Tìm kiếm trong cơ sở dữ liệu
+        let result = await models.find({
+            $or: [
+                { name: { $regex: search, $options: 'i' } },
+                { phone: { $regex: search, $options: 'i' } },
+                // { role: { $regex: search, $options: 'i' } },
+                // { email: { $regex: search, $options: 'i' } },
+            ]
+        });
+
+        // Kiểm tra kết quả trả về
+        if (result.length === 0) {
+            return Promise.reject({ show: true, message: "Có lỗi xảy ra, xin vui lòng thử lại" });
+        }
+
+        // Trả về kết quả cho người dùng
+        return Promise.resolve(result);
+    } catch (error) {
+        // Xử lý lỗi
+        console.log(error);
         return Promise.reject({ show: true, message: "Có lỗi xảy ra, xin vui lòng thử lại" });
     }
 }

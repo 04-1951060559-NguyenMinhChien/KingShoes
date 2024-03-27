@@ -85,13 +85,40 @@ exports.updateUser = async (id, body = {}) => {
 }
 exports.deleteUser = async (id) => {
     try {
-        const User = await User.findById(id);
+        const User = await models.findById(id);
         const imagePath = User.image;
         let deleted = await models.findByIdAndRemove({ _id: id });
         fs.unlinkSync(imagePath); // Xóa hình ảnh từ thư mục
         return Promise.resolve(deleted);
     } catch (error) {
         console.error("Error delete User:", error);
+        return Promise.reject({ show: true, message: "Có lỗi xảy ra, xin vui lòng thử lại" });
+    }
+}
+
+exports.SearchUser = async (search) => {
+    try {
+
+        // Tìm kiếm trong cơ sở dữ liệu
+        let result = await models.find({
+            $or: [
+                { name: { $regex: search, $options: 'i' } },
+                { phone: { $regex: search, $options: 'i' } },
+                { role: { $regex: search, $options: 'i' } },
+                { email: { $regex: search, $options: 'i' } },
+            ]
+        });
+
+        // Kiểm tra kết quả trả về
+        if (result.length === 0) {
+            return Promise.reject({ show: true, message: "Có lỗi xảy ra, xin vui lòng thử lại" });
+        }
+
+        // Trả về kết quả cho người dùng
+        return Promise.resolve(result);
+    } catch (error) {
+        // Xử lý lỗi
+        console.log(error);
         return Promise.reject({ show: true, message: "Có lỗi xảy ra, xin vui lòng thử lại" });
     }
 }

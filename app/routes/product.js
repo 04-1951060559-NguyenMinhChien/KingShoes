@@ -33,6 +33,15 @@ module.exports = function (app, passport) {
                 resp.throws(res, req, err)
             })
         })
+    // Đọc danh sách sản phẩm theo Nhãn Hiệu
+    app.route('/productsbybrand')
+        .get((req, res) => {
+            products.ProductByBrand(req.query.brand_id).then((ok) => {
+                resp.sendOK(res, req, ok)
+            }).catch(function (err) {
+                resp.throws(res, req, err)
+            })
+        })
     // Cập nhật sản phẩm
     app.route('/products/:id', upload.single('image'))
         .put((req, res) => {
@@ -51,7 +60,15 @@ module.exports = function (app, passport) {
                 resp.throws(res, req, err)
             })
         });
-
+    // Tìm kiếm sản phẩm
+    app.route('/products/:data')
+        .post((req, res) => {
+            users.SearchProduct(req.params).then((ok) => {
+                resp.sendOK(res, req, ok)
+            }).catch(function (err) {
+                resp.throws(res, req, err)
+            })
+        });
 
 
 

@@ -1,41 +1,41 @@
 
 var resp = require('../response');
-var brands = require('../lib/brand/index');
+var sizes = require('../lib/size/index');
 // var middlewarePermission = require('../middleware/checkPermission');
 
 module.exports = function (app, passport) {
-    // Tạo mới nhãn hiệu
-    app.route('/brands')
+    // Tạo mới 
+    app.route('/sizes')
         .post((req, res) => {
             console.log("data", req.body);
-            brands.createBrand(req.body).then((ok) => {
+            sizes.createSize(req.body).then((ok) => {
                 resp.sendOK(res, req, ok)
             }).catch(function (err) {
                 resp.throws(res, req, err)
             })
         }),
-        // Đọc danh sách nhãn hiệu
-        app.route('/brands')
+        // Đọc danh sách 
+        app.route('/sizes')
             .get((req, res) => {
-                brands.allBrand().then((ok) => {
+                sizes.allSize().then((ok) => {
                     resp.sendOK(res, req, ok)
                 }).catch(function (err) {
                     resp.throws(res, req, err)
                 })
             })
-    // Cập nhật nhãn hiệu
-    app.route('/brands/:id')
+    // Cập nhật 
+    app.route('/sizes/:id')
         .put((req, res) => {
-            brands.updateBrand(req.params.id, req.body).then((ok) => {
+            sizes.updateSize(req.params.id, req.body).then((ok) => {
                 resp.sendOK(res, req, ok)
             }).catch(function (err) {
                 resp.throws(res, req, err)
             })
         });
-    // Xóa nhãn hiệu
-    app.route('/brands/:id')
+    // Xóa 
+    app.route('/sizes/:id')
         .delete((req, res) => {
-            brands.deleteBrand(req.params.id).then((ok) => {
+            sizes.deleteSize(req.params.id).then((ok) => {
                 resp.sendOK(res, req, ok)
             }).catch(function (err) {
                 resp.throws(res, req, err)
@@ -43,9 +43,9 @@ module.exports = function (app, passport) {
         });
 
     // Tìm kiếm
-    app.route('/brands/:data')
+    app.route('/sizes/:data')
         .post((req, res) => {
-            brands.searchBrand(req.params).then((ok) => {
+            sizes.searchSize(req.params).then((ok) => {
                 resp.sendOK(res, req, ok)
             }).catch(function (err) {
                 resp.throws(res, req, err)

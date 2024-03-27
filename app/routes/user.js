@@ -33,25 +33,33 @@ module.exports = function (app, passport) {
             resp.throws(res, req, err)
         })
     });
-    // Cập nhật sản phẩm
+    // Cập nhật 
     app.route('/users/:id', upload.single('image'))
         .put((req, res) => {
-            users.updateProduct(req.params.id, req).then((ok) => {
+            users.updateUser(req.params.id, req).then((ok) => {
                 resp.sendOK(res, req, ok)
             }).catch(function (err) {
                 resp.throws(res, req, err)
             })
         });
-    // Xóa sản phẩm
+    // Xóa 
     app.route('/users/:id')
         .delete((req, res) => {
-            users.deleteProduct(req.params.id).then((ok) => {
+            users.deleteUser(req.params.id).then((ok) => {
                 resp.sendOK(res, req, ok)
             }).catch(function (err) {
                 resp.throws(res, req, err)
             })
         });
-
+    // Tìm kiếm
+    app.route('/users/:data')
+        .post((req, res) => {
+            users.SearchUser(req.params).then((ok) => {
+                resp.sendOK(res, req, ok)
+            }).catch(function (err) {
+                resp.throws(res, req, err)
+            })
+        });
 
 
 
