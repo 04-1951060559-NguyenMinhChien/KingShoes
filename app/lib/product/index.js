@@ -16,7 +16,9 @@ exports.createProduct = async (req, body = {}) => {
     try {
         let errors = [];
         const { name, description, status, price, brand_id, size_id } = req.body;
-        const image = req.file.path; // Đường dẫn của hình ảnh đã được lưu trữ trong req.file
+        const imagePath = req.file.path; // Đường dẫn của hình ảnh đã được lưu trữ trong req.file
+        const imageFileNameWithoutPath = path.basename(imagePath); // Lấy tên tệp từ đường dẫn đầy đủ
+        const image = '/images/' + imageFileNameWithoutPath; // Đường dẫn cố định của hình ảnh
         // console.log("non the nho", data);
         if (name && brand_id) {
             let checkExists1 = await models.findOne({ brand_id });

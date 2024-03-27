@@ -7,7 +7,7 @@ const path = require('path'); // Import thư viện path để xác định đư
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        cb(null, path.join(__dirname, '../lib/public/images')); // Xác định thư mục đích để lưu trữ tệp ảnh
+        cb(null, path.join(__dirname, '../../public/images')); // Xác định thư mục đích để lưu trữ tệp ảnh
     },
     filename: function (req, file, cb) {
         cb(null, file.originalname); // Sử dụng tên gốc của tệp ảnh

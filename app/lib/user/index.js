@@ -32,18 +32,15 @@ exports.Signup = async (req, body = {}) => {
 }
 exports.Login = async (req, body = {}) => {
     try {
-        const { mail, phone, password } = req;
+        const { email, password } = req;
         let user;
 
         // Kiểm tra xem người dùng đã cung cấp email hoặc số điện thoại chưa
-        if (!mail && !phone) {
+        if (!email) {
             return Promise.reject({ show: true, message: "Vui lòng nhập email hoặc số điện thoại" });
         }
-        if (mail) {
-            user = await models.findOne({ email: mail });
-        } else {
-            user = await models.findOne({ phone: phone });
-        }
+        user = await models.findOne({ email: email });
+
         if (!user) {
             // Không tìm thấy người dùng với thông tin đăng nhập đã nhập
             return Promise.reject({ show: true, message: "Thông tin đăng nhập không tồn tại" });
