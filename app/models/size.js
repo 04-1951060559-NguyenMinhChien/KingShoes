@@ -1,12 +1,12 @@
 const mongoose = require('mongoose');
 const aggregatePaginate = require('mongoose-aggregate-paginate');
 
-const brandSchema = mongoose.Schema({
+const sizeSchema = mongoose.Schema({
     name: { type: String, required: true },
     status: { type: String, required: true },
 }, { timestamps: true }); // Thêm timestamps vào schema)
 
-brandSchema.plugin(aggregatePaginate);
-const Product = mongoose.model('Sizes', brandSchema);
+sizeSchema.plugin(aggregatePaginate);
+const Size = mongoose.model('Sizes', sizeSchema);
 
-module.exports = Product;
+module.exports = Size;
