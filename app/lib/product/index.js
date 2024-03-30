@@ -1,4 +1,5 @@
 let models = require('../../models/products');
+const fs = require('fs'); // Khai báo mô-đun fs
 // const Joi = require('joi');
 // const Promisebb = require('bluebird')
 // const _ = require('lodash');
@@ -97,10 +98,10 @@ exports.updateProduct = async (id, body = {}) => {
 }
 exports.deleteProduct = async (id) => {
     try {
-        const product = await Product.findById(id);
+        const product = await models.findById(id);
         const imagePath = product.image;
+        fs.unlinkSync('D:\\NAM_5\\Do_An_Tot_Nghiep\\kingshoes-be\\KingShoes\\public' + imagePath); // Xóa hình ảnh từ thư mục
         let deleted = await models.findByIdAndRemove({ _id: id });
-        fs.unlinkSync(imagePath); // Xóa hình ảnh từ thư mục
         return Promise.resolve(deleted);
     } catch (error) {
         console.error("Error delete product:", error);
