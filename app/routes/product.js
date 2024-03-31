@@ -25,51 +25,47 @@ module.exports = function (app, passport) {
         })
     });
     // Đọc danh sách sản phẩm
-    app.route('/products')
-        .get((req, res) => {
-            products.allProduct().then((ok) => {
-                resp.sendOK(res, req, ok)
-            }).catch(function (err) {
-                resp.throws(res, req, err)
-            })
+    app.get('/products', (req, res) => {
+        products.allProduct().then((ok) => {
+            resp.sendOK(res, req, ok)
+        }).catch(function (err) {
+            resp.throws(res, req, err)
         })
+    })
     // Đọc danh sách sản phẩm theo Nhãn Hiệu
-    app.route('/productsbybrand')
-        .get((req, res) => {
-            products.ProductByBrand(req.query.brand_id).then((ok) => {
-                resp.sendOK(res, req, ok)
-            }).catch(function (err) {
-                resp.throws(res, req, err)
-            })
+    app.get('/productsbybrand', (req, res) => {
+        products.ProductByBrand(req.query.brand_id).then((ok) => {
+            resp.sendOK(res, req, ok)
+        }).catch(function (err) {
+            resp.throws(res, req, err)
         })
+    })
     // Cập nhật sản phẩm
-    app.route('/products/:id', upload.single('image'))
-        .put((req, res) => {
-            console.log("data checkk", req.body);
-            products.updateProduct(req.params.id, req).then((ok) => {
-                resp.sendOK(res, req, ok)
-            }).catch(function (err) {
-                resp.throws(res, req, err)
-            })
-        });
+    app.put('/products/:id', upload.single('image'), (req, res) => {
+        console.log("data checkk req.file", req.file)
+        console.log("data checkk req.body", req.body);
+        products.updateProduct(req.params.id, req).then((ok) => {
+            resp.sendOK(res, req, ok)
+        }).catch(function (err) {
+            resp.throws(res, req, err)
+        })
+    });
     // Xóa sản phẩm
-    app.route('/products/:id')
-        .delete((req, res) => {
-            products.deleteProduct(req.params.id).then((ok) => {
-                resp.sendOK(res, req, ok)
-            }).catch(function (err) {
-                resp.throws(res, req, err)
-            })
-        });
+    app.delete('/products/:id', (req, res) => {
+        products.deleteProduct(req.params.id).then((ok) => {
+            resp.sendOK(res, req, ok)
+        }).catch(function (err) {
+            resp.throws(res, req, err)
+        })
+    });
     // Tìm kiếm sản phẩm
-    app.route('/products/:data')
-        .post((req, res) => {
-            users.SearchProduct(req.params).then((ok) => {
-                resp.sendOK(res, req, ok)
-            }).catch(function (err) {
-                resp.throws(res, req, err)
-            })
-        });
+    app.post('/products/:data', (req, res) => {
+        users.SearchProduct(req.params).then((ok) => {
+            resp.sendOK(res, req, ok)
+        }).catch(function (err) {
+            resp.throws(res, req, err)
+        })
+    });
 
 
 

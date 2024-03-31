@@ -14,10 +14,10 @@ const fs = require('fs'); // Khai báo mô-đun fs
 // // var elastic = require('../../elastic');
 // const { join } = require('path');
 // const util = require('../utils');
-exports.createBrand = async (data, body = {}) => {
+exports.createBrand = async (req, body = {}) => {
     try {
         let errors = [];
-        const { name, emailBrand, phoneNumber, address } = data;
+        const { name, emailBrand, phoneNumber, address } = req.body;
         const imagePath = req.file.path; // Đường dẫn của hình ảnh đã được lưu trữ trong req.file
         const imageFileNameWithoutPath = path.basename(imagePath); // Lấy tên tệp từ đường dẫn đầy đủ
         const image = '/images/' + imageFileNameWithoutPath; // Đường dẫn cố định của hình ảnh

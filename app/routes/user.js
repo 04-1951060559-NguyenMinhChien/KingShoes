@@ -34,32 +34,29 @@ module.exports = function (app, passport) {
         })
     });
     // Cập nhật 
-    app.route('/users/:id', upload.single('image'))
-        .put((req, res) => {
-            users.updateUser(req.params.id, req).then((ok) => {
-                resp.sendOK(res, req, ok)
-            }).catch(function (err) {
-                resp.throws(res, req, err)
-            })
-        });
+    app.put('/users/:id', upload.single('image'), (req, res) => {
+        users.updateUser(req.params.id, req).then((ok) => {
+            resp.sendOK(res, req, ok)
+        }).catch(function (err) {
+            resp.throws(res, req, err)
+        })
+    });
     // Xóa 
-    app.route('/users/:id')
-        .delete((req, res) => {
-            users.deleteUser(req.params.id).then((ok) => {
-                resp.sendOK(res, req, ok)
-            }).catch(function (err) {
-                resp.throws(res, req, err)
-            })
-        });
+    app.delete('/users/:id', (req, res) => {
+        users.deleteUser(req.params.id).then((ok) => {
+            resp.sendOK(res, req, ok)
+        }).catch(function (err) {
+            resp.throws(res, req, err)
+        })
+    });
     // Tìm kiếm
-    app.route('/users/:data')
-        .post((req, res) => {
-            users.SearchUser(req.params).then((ok) => {
-                resp.sendOK(res, req, ok)
-            }).catch(function (err) {
-                resp.throws(res, req, err)
-            })
-        });
+    app.post('/users/:data', (req, res) => {
+        users.SearchUser(req.params).then((ok) => {
+            resp.sendOK(res, req, ok)
+        }).catch(function (err) {
+            resp.throws(res, req, err)
+        })
+    });
 
 
 
