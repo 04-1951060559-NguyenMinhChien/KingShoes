@@ -53,9 +53,15 @@ exports.allBrand = async () => {
         return Promise.reject({ show: true, message: "Có lỗi xảy ra, xin vui lòng thử lại" });
     }
 }
-exports.updateBrand = async (id, body = {}) => {
+exports.updateBrand = async (id, req) => {
     try {
-        let updated = await models.findByIdAndUpdate(id, body, { new: true });
+        console.log("data checkk id", id);
+        console.log("data checkk", req.body);
+        const imagePath = req.file.path; // Đường dẫn của hình ảnh đã được lưu trữ trong req.file
+        const imageFileNameWithoutPath = path.basename(imagePath); // Lấy tên tệp từ đường dẫn đầy đủ
+        const image = '/images/' + imageFileNameWithoutPath; // Đường dẫn cố định của hình ảnh
+        req.body.image = image;
+        let updated = await models.findByIdAndUpdate(id, req.body, { new: true });
         return Promise.resolve(updated);
     } catch (error) {
         // Bắt và xử lý lỗi nếu có

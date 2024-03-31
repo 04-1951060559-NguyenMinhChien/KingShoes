@@ -35,7 +35,7 @@ module.exports = function (app, passport) {
         })
     // Cập nhật nhãn hiệu
     app.put('/brands', upload.single('image'), (req, res) => {
-        brands.updateBrand(req.params.id, req.body).then((ok) => {
+        brands.updateBrand(req.params.id, req).then((ok) => {
             resp.sendOK(res, req, ok)
         }).catch(function (err) {
             resp.throws(res, req, err)

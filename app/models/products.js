@@ -10,7 +10,8 @@ const productSchema = mongoose.Schema({
     sellingPrice: { type: String },
     numberInStock: { type: String },
     brand_id: { type: mongoose.Schema.Types.ObjectId, ref: 'Brands' },
-    size_id: { type: mongoose.Schema.Types.ObjectId, ref: 'Sizes' }
+    size_id: { type: mongoose.Schema.Types.ObjectId, ref: 'Sizes' },
+    status: { type: Boolean },
 }, { timestamps: true }); // Thêm timestamps vào schema)
 
 productSchema.plugin(aggregatePaginate);
