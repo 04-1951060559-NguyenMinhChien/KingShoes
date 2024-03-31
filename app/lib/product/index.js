@@ -83,10 +83,14 @@ exports.ProductByBrand = async (brand_id) => {
     }
 }
 
-exports.updateProduct = async (id, body = {}) => {
+exports.updateProduct = async (id, req) => {
     try {
-        const image = req.file.path; // Đường dẫn của hình ảnh đã được lưu trữ trong req.file
-        body.image = image;
+        console.log("data checkk", req.body);
+        const imagePath = req.file.path; // Đường dẫn của hình ảnh đã được lưu trữ trong req.file
+        const imageFileNameWithoutPath = path.basename(imagePath); // Lấy tên tệp từ đường dẫn đầy đủ
+        const image = '/images/' + imageFileNameWithoutPath; // Đường dẫn cố định của hình ảnh
+        req.body.image = image;
+        fs.unlinkSync('D:\\NAM_5\\Do_An_Tot_Nghiep\\kingshoes-be\\KingShoes\\public' + image);
         // console.log("non the nho", data);
         let updated = await models.findByIdAndUpdate(id, body, { new: true });
         return Promisebb.resolve(updated);

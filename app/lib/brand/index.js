@@ -1,4 +1,5 @@
 let models = require('../../models/brands');
+const fs = require('fs'); // Khai báo mô-đun fs
 
 // const Joi = require('joi');
 // const Promisebb = require('bluebird')
@@ -16,7 +17,10 @@ let models = require('../../models/brands');
 exports.createBrand = async (data, body = {}) => {
     try {
         let errors = [];
-        const { name, emailBrand, phoneNumber, adress } = data;
+        const { name, emailBrand, phoneNumber, address } = data;
+        const imagePath = req.file.path; // Đường dẫn của hình ảnh đã được lưu trữ trong req.file
+        const imageFileNameWithoutPath = path.basename(imagePath); // Lấy tên tệp từ đường dẫn đầy đủ
+        const image = '/images/' + imageFileNameWithoutPath; // Đường dẫn cố định của hình ảnh
         // console.log("non the nho", data);
         if (name && emailBrand && phoneNumber) {
             let checkExists1 = await models.findOne({ name });
@@ -28,7 +32,7 @@ exports.createBrand = async (data, body = {}) => {
             }
         }
         // Thực hiện tạo sản phẩm
-        let created = await models.create({ name, emailBrand, phoneNumber, adress });
+        let created = await models.create({ name, emailBrand, phoneNumber, address, image });
 
         // Trả về thông báo thành công nếu tạo sản phẩm thành công
         return Promise.resolve(created);
@@ -61,6 +65,9 @@ exports.updateBrand = async (id, body = {}) => {
 }
 exports.deleteBrand = async (id) => {
     try {
+        const brand = await models.findById(id);
+        const imagePath = brand.image;
+        fs.unlinkSync('D:\\NAM_5\\Do_An_Tot_Nghiep\\kingshoes-be\\KingShoes\\public' + imagePath); // Xóa hình ảnh từ thư mục
         let deleted = await models.findByIdAndRemove({ _id: id });
         return Promise.resolve(deleted);
     } catch (error) {

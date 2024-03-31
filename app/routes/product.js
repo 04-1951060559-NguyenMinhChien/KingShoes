@@ -45,6 +45,7 @@ module.exports = function (app, passport) {
     // Cập nhật sản phẩm
     app.route('/products/:id', upload.single('image'))
         .put((req, res) => {
+            console.log("data checkk", req.body);
             products.updateProduct(req.params.id, req).then((ok) => {
                 resp.sendOK(res, req, ok)
             }).catch(function (err) {
