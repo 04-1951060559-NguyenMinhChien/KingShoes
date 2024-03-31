@@ -91,8 +91,16 @@ exports.updateProduct = async (id, req) => {
         const imageFileNameWithoutPath = path.basename(imagePath); // Lấy tên tệp từ đường dẫn đầy đủ
         const image = '/images/' + imageFileNameWithoutPath; // Đường dẫn cố định của hình ảnh
         req.body.image = image;
-        // fs.unlinkSync('D:\\NAM_5\\Do_An_Tot_Nghiep\\kingshoes-be\\KingShoes\\public' + image);
-        // console.log("non the nho", data);
+        const product = await models.findById(id);
+        if (!product) {
+            return Promise.reject({ show: true, message: "Không tìm thấy sản phẩm để xóa" });
+        }
+
+        const imagePathDelete = product.image;
+        const imagePathFull = `D:\\MyProject\\KingShoes\\public` + imagePathDelete;
+        if (fs.existsSync(imagePathFull)) {
+            fs.unlinkSync(imagePathFull); // Xóa hình ảnh từ thư mục
+        }
         let updated = await models.findByIdAndUpdate(id, req.body, { new: true });
         return Promise.resolve(updated);
     } catch (error) {
@@ -104,15 +112,24 @@ exports.updateProduct = async (id, req) => {
 exports.deleteProduct = async (id) => {
     try {
         const product = await models.findById(id);
+        if (!product) {
+            return Promise.reject({ show: true, message: "Không tìm thấy sản phẩm để xóa" });
+        }
+
         const imagePath = product.image;
-        fs.unlinkSync(`D:\\MyProject\\KingShoes\\public` + imagePath); // Xóa hình ảnh từ thư mục
-        let deleted = await models.findByIdAndRemove({ _id: id });
+        const imagePathFull = `D:\\MyProject\\KingShoes\\public` + imagePath;
+        if (fs.existsSync(imagePathFull)) {
+            fs.unlinkSync(imagePathFull); // Xóa hình ảnh từ thư mục
+        }
+
+        let deleted = await models.findByIdAndRemove(id);
         return Promise.resolve(deleted);
     } catch (error) {
         console.error("Error delete product:", error);
         return Promise.reject({ show: true, message: "Có lỗi xảy ra, xin vui lòng thử lại" });
     }
 }
+
 
 exports.SearchProduct = async (search) => {
     try {

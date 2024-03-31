@@ -61,6 +61,17 @@ exports.updateBrand = async (id, req) => {
         const imageFileNameWithoutPath = path.basename(imagePath); // Lấy tên tệp từ đường dẫn đầy đủ
         const image = '/images/' + imageFileNameWithoutPath; // Đường dẫn cố định của hình ảnh
         req.body.image = image;
+
+        const brand = await models.findById(id);
+        if (!brand) {
+            return Promise.reject({ show: true, message: "Không tìm thấy sản phẩm để xóa" });
+        }
+
+        const imagePathDelete = brand.image;
+        const imagePathFull = `D:\\MyProject\\KingShoes\\public` + imagePathDelete;
+        if (fs.existsSync(imagePathFull)) {
+            fs.unlinkSync(imagePathFull); // Xóa hình ảnh từ thư mục
+        }
         let updated = await models.findByIdAndUpdate(id, req.body, { new: true });
         return Promise.resolve(updated);
     } catch (error) {
@@ -72,8 +83,15 @@ exports.updateBrand = async (id, req) => {
 exports.deleteBrand = async (id) => {
     try {
         const brand = await models.findById(id);
-        const imagePath = brand.image;
-        fs.unlinkSync('D:\\NAM_5\\Do_An_Tot_Nghiep\\kingshoes-be\\KingShoes\\public' + imagePath); // Xóa hình ảnh từ thư mục
+        if (!brand) {
+            return Promise.reject({ show: true, message: "Không tìm thấy sản phẩm để xóa" });
+        }
+
+        const imagePathDelete = brand.image;
+        const imagePathFull = `D:\\MyProject\\KingShoes\\public` + imagePathDelete;
+        if (fs.existsSync(imagePathFull)) {
+            fs.unlinkSync(imagePathFull); // Xóa hình ảnh từ thư mục
+        } // Xóa hình ảnh từ thư mục
         let deleted = await models.findByIdAndRemove({ _id: id });
         return Promise.resolve(deleted);
     } catch (error) {
