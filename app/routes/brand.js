@@ -13,6 +13,8 @@ const storage = multer.diskStorage({
         cb(null, file.originalname); // Sử dụng tên gốc của tệp ảnh
     }
 });
+const upload = multer({ storage: storage });
+
 module.exports = function (app, passport) {
     // Tạo mới nhãn hiệu
     app.post('/brands', upload.single('image'), (req, res) => {
