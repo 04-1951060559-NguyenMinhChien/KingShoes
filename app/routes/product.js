@@ -32,6 +32,14 @@ module.exports = function (app, passport) {
             resp.throws(res, req, err)
         })
     })
+    // lấy product theo id
+    app.get('/products/:id', (req, res) => {
+        products.ProductById(req.params.id).then((ok) => {
+            resp.sendOK(res, req, ok)
+        }).catch(function (err) {
+            resp.throws(res, req, err)
+        })
+    })
     // Đọc danh sách sản phẩm theo Nhãn Hiệu
     app.get('/productsbybrand', (req, res) => {
         products.ProductByBrand(req.query.brand_id).then((ok) => {

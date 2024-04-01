@@ -61,6 +61,23 @@ exports.allProduct = async () => {
         return Promise.reject({ show: true, message: "Có lỗi xảy ra, xin vui lòng thử lại" });
     }
 }
+exports.ProductById = async (id) => {
+    try {
+        let data = await models.findById(id)
+            .populate('brand_id', 'name') // Lấy ra trường 'name' từ collection 'Brands' tương ứng với 'brand_id'
+            .populate('size_id', 'name') // Lấy ra trường 'name' từ collection 'Sizes' tương ứng với 'size_id'
+            .exec(); // Thực thi truy vấn và trả về kết quả
+
+        // In ra dữ liệu trả về
+        // console.log(data);
+
+        console.log("ProductById runnnnnn", data);
+        return Promise.resolve(data);
+    } catch (error) {
+        console.log(error);
+        return Promise.reject({ show: true, message: "Có lỗi xảy ra, xin vui lòng thử lại" });
+    }
+}
 
 // Hiển thị sản phầm theo nhãn hiệu
 exports.ProductByBrand = async (brand_id) => {
