@@ -87,20 +87,22 @@ exports.updateProduct = async (id, req) => {
     try {
         console.log("data checkk id", id);
         console.log("data checkk", req.body);
-        const imagePath = req.file.path; // Đường dẫn của hình ảnh đã được lưu trữ trong req.file
-        const imageFileNameWithoutPath = path.basename(imagePath); // Lấy tên tệp từ đường dẫn đầy đủ
-        const image = '/images/' + imageFileNameWithoutPath; // Đường dẫn cố định của hình ảnh
-        req.body.image = image;
         const product = await models.findById(id);
         if (!product) {
             return Promise.reject({ show: true, message: "Không tìm thấy sản phẩm để xóa" });
         }
-
-        const imagePathDelete = product.image;
-        const imagePathFull = `D:\\MyProject\\KingShoes\\public` + imagePathDelete;
-        if (fs.existsSync(imagePathFull)) {
-            fs.unlinkSync(imagePathFull); // Xóa hình ảnh từ thư mục
+        if (req.file) {
+            const imagePath = req.file.path; // Đường dẫn của hình ảnh đã được lưu trữ trong req.file
+            const imageFileNameWithoutPath = path.basename(imagePath); // Lấy tên tệp từ đường dẫn đầy đủ
+            const image = '/images/' + imageFileNameWithoutPath; // Đường dẫn cố định của hình ảnh
+            req.body.image = image;
+            const imagePathDelete = product.image;
+            const imagePathFull = `D:\\MyProject\\KingShoes\\public` + imagePathDelete;
+            if (fs.existsSync(imagePathFull)) {
+                fs.unlinkSync(imagePathFull); // Xóa hình ảnh từ thư mục
+            }
         }
+
         let updated = await models.findByIdAndUpdate(id, req.body, { new: true });
         return Promise.resolve(updated);
     } catch (error) {
