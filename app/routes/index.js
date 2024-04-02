@@ -6,6 +6,7 @@ var product = require('./product');
 var brand = require('./brand');
 var user = require('./user');
 var size = require('./size');
+var cart = require('./cart');
 
 module.exports = function (app) {
 
@@ -24,5 +25,6 @@ module.exports = function (app) {
     brand(app)
     user(app)
     size(app)
+    cart(app)
 
 };
