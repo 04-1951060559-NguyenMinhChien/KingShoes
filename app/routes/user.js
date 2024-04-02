@@ -33,6 +33,14 @@ module.exports = function (app, passport) {
             resp.throws(res, req, err)
         })
     });
+    // Đọc danh sách 
+    app.get('/users', (req, res) => {
+        products.allUser().then((ok) => {
+            resp.sendOK(res, req, ok)
+        }).catch(function (err) {
+            resp.throws(res, req, err)
+        })
+    })
     // Cập nhật 
     app.put('/users/:id', upload.single('image'), (req, res) => {
         users.updateUser(req.params.id, req).then((ok) => {
