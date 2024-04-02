@@ -42,6 +42,7 @@ module.exports = function (app, passport) {
     })
     // Đọc danh sách sản phẩm theo Nhãn Hiệu
     app.get('/productsbybrand', (req, res) => {
+        console.log("req.body.brand_id", req.query.brand_id);
         products.ProductByBrand(req.query.brand_id).then((ok) => {
             resp.sendOK(res, req, ok)
         }).catch(function (err) {
