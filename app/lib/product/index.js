@@ -16,7 +16,7 @@ const fs = require('fs'); // Khai báo mô-đun fs
 exports.createProduct = async (req, body = {}) => {
     try {
         let errors = [];
-        const { name, description, status, price, brand_id, size_id } = req.body;
+        const { name, description, status, price, brand_id, size_id, product_type, numberInStock } = req.body;
         const imagePath = req.file.path; // Đường dẫn của hình ảnh đã được lưu trữ trong req.file
         const imageFileNameWithoutPath = path.basename(imagePath); // Lấy tên tệp từ đường dẫn đầy đủ
         const image = '/images/' + imageFileNameWithoutPath; // Đường dẫn cố định của hình ảnh
@@ -34,7 +34,7 @@ exports.createProduct = async (req, body = {}) => {
             return Promise.reject({ show: true, message: errors });
         }
         // Thực hiện tạo sản phẩm
-        let created = await models.create({ name, description, status, price, brand_id, size_id, image });
+        let created = await models.create({ name, description, status, price, brand_id, size_id, image, product_type, numberInStock });
 
         // Trả về thông báo thành công nếu tạo sản phẩm thành công
         return Promise.resolve(created);
