@@ -35,7 +35,7 @@ module.exports = function (app, passport) {
     });
     // Đọc danh sách 
     app.get('/users', (req, res) => {
-        products.allUser().then((ok) => {
+        users.allUser().then((ok) => {
             resp.sendOK(res, req, ok)
         }).catch(function (err) {
             resp.throws(res, req, err)
