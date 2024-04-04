@@ -59,6 +59,34 @@ exports.Login = async (req, body = {}) => {
         return Promise.reject({ show: true, message: "Có lỗi xảy ra, xin vui lòng thử lại" });
     }
 };
+// exports.createUser = async (req, body = {}) => {
+//     try {
+//         let errors = [];
+//         const { name, phone, email, password, status } = req.body;
+//         const imagePath = req.file.path; // Đường dẫn của hình ảnh đã được lưu trữ trong req.file
+//         const imageFileNameWithoutPath = path.basename(imagePath); // Lấy tên tệp từ đường dẫn đầy đủ
+//         const image = '/images/' + imageFileNameWithoutPath; // Đường dẫn cố định của hình ảnh
+//         // console.log("non the nho", data);
+//         if (name && email && phone) {
+//             let checkExists1 = await models.findOne({ name });
+//             let checkExists2 = await models.findOne({ email });
+//             let checkExists3 = await models.findOne({ phone });
+//             if (checkExists1 && checkExists2 && checkExists3) {
+//                 errors.push({ 'label': 'user_exist', 'message': 'Tài khoản đã tồn tại' });
+//                 return Promise.reject({ show: true, message: errors });
+//             }
+//         }
+//         // Thực hiện tạo tài khoản
+//         let created = await models.create({ name, phone, email, password, image, status });
+
+//         // Trả về thông báo thành công nếu tạo sản phẩm thành công
+//         return Promise.resolve(created);
+//     } catch (error) {
+//         // Bắt và xử lý lỗi nếu có
+//         console.error("Error creating Brand:", error);
+//         return Promise.reject({ show: true, message: "Có lỗi xảy ra, xin vui lòng thử lại" });
+//     }
+// }
 
 exports.allUser = async () => {
     try {

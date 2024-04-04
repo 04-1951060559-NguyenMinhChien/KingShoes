@@ -82,6 +82,7 @@ exports.ProductById = async (id) => {
 // Hiển thị sản phầm theo nhãn hiệu
 exports.ProductByBrand = async (brand_id) => {
     try {
+        console.log(brand_id);
         // Tìm kiếm các sản phẩm dựa trên brand_id
         let data = await models.find({ brand_id: brand_id })
             .populate('brand_id', 'name') // Lấy ra trường 'name' từ collection 'Brands' tương ứng với 'brand_id'

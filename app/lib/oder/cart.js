@@ -16,20 +16,23 @@ let models = require('../../models/cart');
 exports.createCart = async (data) => {
     try {
         // let errors = [];
-        const { user_id, product_ids } = data;
-
+        const { user_id, product_data } = data;
+        const productIdsWithQuantity = product_data.map(item => ({
+            product_id: item.product_id,
+            quantity: item.quantity
+        }));
         if (user_id) {
             // Kiểm tra xem giỏ hàng có tồn tại không
             let checkExists1 = await models.findOne({ user_id });
             if (checkExists1) {
                 // Nếu giỏ hàng đã tồn tại, thực hiện cập nhật
-                return await this.updateCart(user_id, product_ids);
+                return await this.updateCart(user_id, productIdsWithQuantity);
                 // return Promise.resolve(checkExists1); // Trả về thông tin giỏ hàng đã cập nhật
             }
         }
 
         // Nếu giỏ hàng chưa tồn tại, thực hiện tạo mới
-        let created = await models.create({ user_id, product_ids });
+        let created = await models.create({ user_id, product: productIdsWithQuantity });
         return Promise.resolve(created); // Trả về thông tin giỏ hàng đã tạo mới
     } catch (error) {
         // Bắt và xử lý lỗi nếu có
@@ -41,9 +44,11 @@ exports.createCart = async (data) => {
 
 exports.allCart = async (user_id) => {
     try {
-        let data = await models.findOne({ user_id })
+        let data = await models.find({ user_id })
             .populate('user_id') // Lấy thông tin của người dùng nếu cần
-            .populate('product_ids'); // Lấy thông tin chi tiết về các sản phẩm trong giỏ hàng
+            .populate({
+                path: 'product.product_id', // Đường dẫn đến trường mảng product và trường product_id bên trong mảng đó
+            });
 
         return Promise.resolve(data);
     } catch (error) {
@@ -52,19 +57,30 @@ exports.allCart = async (user_id) => {
     }
 }
 
-exports.updateCart = async (user_id, product_ids) => {
+const mongoose = require('mongoose');
+
+exports.updateCart = async (user_id, product) => {
     try {
-        // Tìm đối tượng giỏ hàng dựa trên user_id
+        console.log(user_id);
         let cart = await models.findOne({ user_id });
 
         if (!cart) {
             throw new Error('Không tìm thấy giỏ hàng');
         }
 
-        // Kiểm tra xem sản phẩm mới đã tồn tại trong giỏ hàng hay chưa
-        product_ids.forEach(product_id => {
-            if (!cart.product_ids.includes(product_id)) {
-                cart.product_ids.push(product_id); // Thêm sản phẩm mới vào mảng nếu chưa tồn tại
+        // Cập nhật sản phẩm trong giỏ hàng
+        product.forEach(newItem => {
+            // Tìm kiếm sản phẩm trong giỏ hàng
+            let existingProduct = cart.product.find(item =>
+                item.product_id.toString() === newItem.product_id.toString()
+            );
+
+            if (existingProduct) {
+                // Nếu sản phẩm đã tồn tại, cập nhật số lượng
+                existingProduct.quantity = newItem.quantity;
+            } else {
+                // Nếu sản phẩm chưa tồn tại, thêm sản phẩm mới vào giỏ hàng
+                cart.product.push(newItem);
             }
         });
 
@@ -77,6 +93,8 @@ exports.updateCart = async (user_id, product_ids) => {
         return Promise.reject({ show: true, message: "Có lỗi xảy ra, xin vui lòng thử lại" });
     }
 }
+
+
 
 exports.deleteCartItem = async (cartId, productId) => {
     try {

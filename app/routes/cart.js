@@ -24,7 +24,7 @@ module.exports = function (app, passport) {
         })
     // Xóa 
     app.delete('/carts/:id', (req, res) => {
-        console.log("req.params.id, req.body.product_ids", req.params.id, req.body.product_ids);
+        console.log("req.params.id, req.body.product_data", req.params.id, req.body.product_ids);
         carts.deleteCartItem(req.params.id, req.body.product_ids).then((ok) => {
             resp.sendOK(res, req, ok)
         }).catch(function (err) {

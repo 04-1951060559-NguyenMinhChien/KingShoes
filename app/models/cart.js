@@ -3,7 +3,10 @@ const aggregatePaginate = require('mongoose-aggregate-paginate');
 
 const CartSchema = mongoose.Schema({
     user_id: { type: mongoose.Schema.Types.ObjectId, ref: 'Users' },
-    product_ids: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Products' }]
+    product: [{
+        product_id: { type: mongoose.Schema.Types.ObjectId, ref: 'Products' },
+        quantity: { type: Number, default: 1 }
+    }]
 }, { timestamps: true });
 
 CartSchema.plugin(aggregatePaginate);
