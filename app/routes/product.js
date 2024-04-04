@@ -69,7 +69,7 @@ module.exports = function (app, passport) {
     });
     // Tìm kiếm sản phẩm
     app.post('/products/search/:data', (req, res) => {
-        users.SearchProduct(req.params).then((ok) => {
+        products.SearchProduct(req.params).then((ok) => {
             resp.sendOK(res, req, ok)
         }).catch(function (err) {
             resp.throws(res, req, err)
