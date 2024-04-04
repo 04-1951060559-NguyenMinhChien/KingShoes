@@ -67,14 +67,11 @@ exports.updateCart = async (user_id, product) => {
         if (!cart) {
             throw new Error('Không tìm thấy giỏ hàng');
         }
-
-        // Cập nhật sản phẩm trong giỏ hàng
         product.forEach(newItem => {
             // Tìm kiếm sản phẩm trong giỏ hàng
             let existingProduct = cart.product.find(item =>
                 item.product_id.toString() === newItem.product_id.toString()
             );
-
             if (existingProduct) {
                 // Nếu sản phẩm đã tồn tại, cập nhật số lượng
                 existingProduct.quantity = newItem.quantity;
@@ -83,8 +80,6 @@ exports.updateCart = async (user_id, product) => {
                 cart.product.push(newItem);
             }
         });
-
-        // Lưu trạng thái mới của đối tượng giỏ hàng
         let updatedCart = await cart.save();
 
         return Promise.resolve(updatedCart);
@@ -104,8 +99,8 @@ exports.deleteCartItem = async (cartId, productId) => {
             throw new Error('Không tìm thấy giỏ hàng');
         }
 
-        // Loại bỏ ID cụ thể khỏi mảng "product_ids"
-        cart.product_ids = cart.product_ids.filter(id => id.toString() !== productId.toString());
+        // Loại bỏ sản phẩm cụ thể khỏi mảng "product"
+        cart.product = cart.product.filter(item => item.product_id.toString() !== productId.toString());
 
         // Lưu trạng thái mới của đối tượng giỏ hàng
         let updatedCart = await cart.save();
@@ -116,4 +111,5 @@ exports.deleteCartItem = async (cartId, productId) => {
         return Promise.reject({ show: true, message: "Có lỗi xảy ra, xin vui lòng thử lại" });
     }
 }
+
 
