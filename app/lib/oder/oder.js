@@ -16,7 +16,7 @@ let models = require('../../models/oder');
 exports.createOder = async (data) => {
     try {
         // let errors = [];
-        const { user_id, product_data, name, phone, email, content, address, ward, district, province, statusPay, statusOder } = data;
+        const { user_id, product_data, name, phone, email, content, address, ward, district, province, typePay, statusPay, statusOder } = data;
         const productIdsWithQuantity = product_data.map(item => ({
             product_id: item.product_id,
             quantity: item.quantity
@@ -32,7 +32,7 @@ exports.createOder = async (data) => {
         }
 
         // Nếu giỏ hàng chưa tồn tại, thực hiện tạo mới
-        let created = await models.create({ user_id, product: productIdsWithQuantity, name, phone, email, content, address, ward, district, province, statusPay, statusOder });
+        let created = await models.create({ user_id, product: productIdsWithQuantity, name, phone, email, content, address, ward, district, province, typePay, statusPay, statusOder });
         return Promise.resolve(created); // Trả về thông tin giỏ hàng đã tạo mới
     } catch (error) {
         // Bắt và xử lý lỗi nếu có
