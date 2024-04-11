@@ -17,7 +17,7 @@ const OderSchema = mongoose.Schema({
     province: { type: String, require: true },// Tỉnh Thành Phố
     typePay: { type: String, require: true },// 0: Khi nhận hàng 1: Chuyển khoản
     totalPrice: { type: String, require: true },
-    statusPay: { type: String, require: true },//0: Chờ xác nhận/ 1:Xác nhận/ 2:Đang giao/ 3:Thành công 
+    statusPay: { type: String, require: true },//0: Chờ xác nhận/ 1:Xác nhận
     statusOder: { type: String, require: true },//0: Chờ xác nhận/ 1:Xác nhận/ 2:Đang giao/ 3:Thành công 
 }, { timestamps: true });
 

@@ -16,23 +16,23 @@ let models = require('../../models/oder');
 exports.createOder = async (data) => {
     try {
         // let errors = [];
-        const { user_id, product_data, name, phone, email, content, address, ward, district, province, typePay, statusPay, statusOder } = data;
+        const { user_id, product_data, name, totalPrice, phone, email, content, address, ward, district, province, typePay, statusPay, note, statusOder } = data;
         const productIdsWithQuantity = product_data.map(item => ({
             product_id: item.product_id,
             quantity: item.quantity
         }));
-        if (user_id) {
-            // Kiểm tra xem giỏ hàng có tồn tại không
-            let checkExists1 = await models.findOne({ user_id });
-            if (checkExists1) {
-                // Nếu giỏ hàng đã tồn tại, thực hiện cập nhật
-                return await this.updateOder(user_id, statusPay, statusOder);
-                // return Promise.resolve(checkExists1); // Trả về thông tin giỏ hàng đã cập nhật
-            }
-        }
+        // if (user_id) {
+        //     // Kiểm tra xem giỏ hàng có tồn tại không
+        //     let checkExists1 = await models.findOne({ user_id });
+        //     if (checkExists1) {
+        //         // Nếu giỏ hàng đã tồn tại, thực hiện cập nhật
+        //         return await this.updateOder(user_id, statusPay, statusOder);
+        //         // return Promise.resolve(checkExists1); // Trả về thông tin giỏ hàng đã cập nhật
+        //     }
+        // }
 
         // Nếu giỏ hàng chưa tồn tại, thực hiện tạo mới
-        let created = await models.create({ user_id, product: productIdsWithQuantity, name, phone, email, content, address, ward, district, province, typePay, statusPay, statusOder });
+        let created = await models.create({ user_id, product: productIdsWithQuantity, name, totalPrice, phone, note, email, content, address, ward, district, province, typePay, statusPay, statusOder });
         return Promise.resolve(created); // Trả về thông tin giỏ hàng đã tạo mới
     } catch (error) {
         // Bắt và xử lý lỗi nếu có
@@ -74,7 +74,7 @@ exports.allOder = async () => {
 
 exports.updateOder = async (user_id, statusPay, statusOder) => {
     try {
-        console.log(user_id);
+        console.log("user_id", user_id);
         let oder = await models.findOne({ user_id });
 
         if (!oder) {

@@ -6,7 +6,7 @@ var oders = require('../lib/oder/oder');
 module.exports = function (app, passport) {
     // Tạo mới 
     app.post('/oders', (req, res) => {
-        console.log("data", req.body);
+        console.log("data 111111", req.body);
         oders.createOder(req.body).then((ok) => {
             resp.sendOK(res, req, ok)
         }).catch(function (err) {

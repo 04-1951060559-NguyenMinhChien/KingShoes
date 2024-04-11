@@ -153,14 +153,16 @@ exports.deleteProduct = async (id) => {
 
 exports.SearchProduct = async (search) => {
     try {
+        // Kiểm tra và chuyển đổi dữ liệu nếu cần
+        // if (typeof search !== 'string') {
+        //     search = search.data.toString();
+        // }
 
         // Tìm kiếm trong cơ sở dữ liệu
         let result = await models.find({
             $or: [
-                { name: { $regex: search, $options: 'i' } },
-                // { phone: { $regex: search, $options: 'i' } },
-                // { role: { $regex: search, $options: 'i' } },
-                // { email: { $regex: search, $options: 'i' } },
+                { name: { $regex: search.data, $options: 'i' } },
+                // Các trường tìm kiếm khác nếu cần
             ]
         });
 
