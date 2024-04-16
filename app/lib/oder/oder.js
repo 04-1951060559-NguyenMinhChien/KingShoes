@@ -1,4 +1,5 @@
 let models = require('../../models/oder');
+let Product = require('../../models/products');
 
 // const Joi = require('joi');
 // const Promisebb = require('bluebird')
@@ -15,31 +16,33 @@ let models = require('../../models/oder');
 // const util = require('../utils');
 exports.createOder = async (data) => {
     try {
-        // let errors = [];
         const { user_id, product_data, name, totalPrice, phone, email, content, address, ward, district, province, typePay, statusPay, note, statusOder } = data;
         const productIdsWithQuantity = product_data.map(item => ({
             product_id: item.product_id,
             quantity: item.quantity
         }));
-        // if (user_id) {
-        //     // Kiểm tra xem giỏ hàng có tồn tại không
-        //     let checkExists1 = await models.findOne({ user_id });
-        //     if (checkExists1) {
-        //         // Nếu giỏ hàng đã tồn tại, thực hiện cập nhật
-        //         return await this.updateOder(user_id, statusPay, statusOder);
-        //         // return Promise.resolve(checkExists1); // Trả về thông tin giỏ hàng đã cập nhật
-        //     }
-        // }
 
-        // Nếu giỏ hàng chưa tồn tại, thực hiện tạo mới
         let created = await models.create({ user_id, product: productIdsWithQuantity, name, totalPrice, phone, note, email, content, address, ward, district, province, typePay, statusPay, statusOder });
-        return Promise.resolve(created); // Trả về thông tin giỏ hàng đã tạo mới
+        if (created) {
+            for (const { product_id, quantity } of productIdsWithQuantity) {
+                const product = await Product.findById(product_id);
+                if (!product) {
+                    return Promise.reject({ show: true, message: `Sản phẩm với id ${product_id} không tồn tại` });
+                }
+                if (product.quantity < quantity) {
+                    return Promise.reject({ show: true, message: `Không đủ số lượng sản phẩm với tên ${product.name}` });
+                }
+                product.quantity -= quantity;
+                await product.save();
+            }
+        }
+        return Promise.resolve(created);
     } catch (error) {
-        // Bắt và xử lý lỗi nếu có
         console.error("Error creating Oder:", error);
         return Promise.reject({ show: true, message: "Có lỗi xảy ra, xin vui lòng thử lại" });
     }
 }
+
 
 
 exports.allOderByUser = async (user_id) => {

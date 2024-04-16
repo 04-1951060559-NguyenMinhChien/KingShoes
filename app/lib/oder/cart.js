@@ -44,13 +44,18 @@ exports.createCart = async (data) => {
 
 exports.allCart = async (user_id) => {
     try {
-        let data = await models.find({ user_id })
-            .populate('user_id') // Lấy thông tin của người dùng nếu cần
-            .populate({
-                path: 'product.product_id', // Đường dẫn đến trường mảng product và trường product_id bên trong mảng đó
-            });
+        if (user_id) {
+            let data = await models.find({ user_id })
+                .populate('user_id') // Lấy thông tin của người dùng nếu cần
+                .populate({
+                    path: 'product.product_id', // Đường dẫn đến trường mảng product và trường product_id bên trong mảng đó
+                });
+            return Promise.resolve(data);
+        } else {
+            let data = []
+            return Promise.resolve(data);
+        }
 
-        return Promise.resolve(data);
     } catch (error) {
         console.log(error);
         return Promise.reject({ show: true, message: "Có lỗi xảy ra, xin vui lòng thử lại" });
