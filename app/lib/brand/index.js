@@ -53,6 +53,16 @@ exports.allBrand = async () => {
         return Promise.reject({ show: true, message: "Có lỗi xảy ra, xin vui lòng thử lại" });
     }
 }
+exports.allBrandOn = async () => {
+    try {
+        let data = await models.find({ status: "1" });
+        console.log("data");
+        return Promise.resolve(data);
+    } catch (error) {
+        console.log(error);
+        return Promise.reject({ show: true, message: "Có lỗi xảy ra, xin vui lòng thử lại" });
+    }
+}
 exports.updateBrand = async (id, req) => {
     try {
         console.log("data checkk id", id);

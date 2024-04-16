@@ -33,6 +33,14 @@ module.exports = function (app, passport) {
                 resp.throws(res, req, err)
             })
         })
+    // Đọc danh sách hoạt động
+    app.get('/brands-on', (req, res) => {
+        brands.allBrandOn().then((ok) => {
+            resp.sendOK(res, req, ok)
+        }).catch(function (err) {
+            resp.throws(res, req, err)
+        })
+    })
     // Cập nhật nhãn hiệu
     app.put('/brands/:id', upload.single('image'), (req, res) => {
         brands.updateBrand(req.params.id, req).then((ok) => {

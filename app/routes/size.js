@@ -21,6 +21,14 @@ module.exports = function (app, passport) {
                 resp.throws(res, req, err)
             })
         })
+    // Đọc danh sách hoạt động
+    app.get('/sizes-on', (req, res) => {
+        sizes.allSizeOn().then((ok) => {
+            resp.sendOK(res, req, ok)
+        }).catch(function (err) {
+            resp.throws(res, req, err)
+        })
+    })
     // Cập nhật 
     app.put('/sizes/:id', (req, res) => {
         sizes.updateSize(req.params.id, req.body).then((ok) => {
