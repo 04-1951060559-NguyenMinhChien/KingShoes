@@ -29,10 +29,10 @@ exports.createOder = async (data) => {
                 if (!product) {
                     return Promise.reject({ show: true, message: `Sản phẩm với id ${product_id} không tồn tại` });
                 }
-                if (product.quantity < quantity) {
+                if (product.numberInStock < quantity) {
                     return Promise.reject({ show: true, message: `Không đủ số lượng sản phẩm với tên ${product.name}` });
                 }
-                product.quantity -= quantity;
+                product.numberInStock -= quantity;
                 await product.save();
             }
         }
