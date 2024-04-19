@@ -24,7 +24,7 @@ exports.createOder = async (data) => {
 
         let created = await models.create({ user_id, product: productIdsWithQuantity, name, totalPrice, phone, note, email, content, address, ward, district, province, typePay, statusPay, statusOder });
         if (created) {
-            // this.sendMail(email)
+            this.sendMail(data)
             for (const { product_id, quantity } of productIdsWithQuantity) {
                 const product = await Product.findById(product_id);
                 if (!product) {
@@ -103,27 +103,28 @@ exports.updateOder = async (data) => {
 
 exports.sendMail = async (data) => {
     try {
-        console.log(data);
+        // console.log(data);
+        const priceAll = await this.formatPrice(data.totalPrice)
         // Tạo transporter
         const transporter = nodemailer.createTransport({
             service: 'gmail',
             auth: {
                 user: 'huumanhk129@gmail.com',
-                pass: 'manh29062001',
+                pass: 'lvyt gedl zgrm dpjj',
             },
         });
 
         // Tạo options cho email
         const mailOptions = {
             from: 'huumanhk129@gmail.com',
-            to: data,
+            to: data.email,
             subject: 'Thông báo đặt hàng',
-            text: 'Đơn hàng của bạn đã được đặt thành công !',
+            text: `Đơn hàng của bạn đã được đặt thành công ! Tổng tiền của bạn là ${priceAll} với người nhận ${data.name} địa chỉ ${data.ward}, ${data.district}, ${data.province}. Vui lòng truy cập profile trên trang web đặt hàng để xem chi tiết đơn hàng`,
         };
 
         // Gửi email
         const info = await transporter.sendMail(mailOptions);
-        console.log('Email sent:', info.response);
+        // console.log('Email sent:', info.response);
         return info; // Trả về thông tin về email đã gửi nếu cần thiết
     } catch (error) {
         console.error('Error occurred:', error);
@@ -132,3 +133,9 @@ exports.sendMail = async (data) => {
 };
 
 
+exports.formatPrice = async (price) => {
+    return new Intl.NumberFormat("vi-VN", {
+        style: "currency",
+        currency: "VND",
+    }).format(price);
+}
