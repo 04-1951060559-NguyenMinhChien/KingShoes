@@ -1,6 +1,6 @@
 let models = require('../../models/oder');
 let Product = require('../../models/products');
-
+var nodemailer = require("nodemailer");
 // const Joi = require('joi');
 // const Promisebb = require('bluebird')
 // const _ = require('lodash');
@@ -24,6 +24,7 @@ exports.createOder = async (data) => {
 
         let created = await models.create({ user_id, product: productIdsWithQuantity, name, totalPrice, phone, note, email, content, address, ward, district, province, typePay, statusPay, statusOder });
         if (created) {
+            // this.sendMail(email)
             for (const { product_id, quantity } of productIdsWithQuantity) {
                 const product = await Product.findById(product_id);
                 if (!product) {
@@ -75,10 +76,12 @@ exports.allOder = async () => {
     }
 }
 
-exports.updateOder = async (user_id, statusPay, statusOder) => {
+exports.updateOder = async (data) => {
     try {
-        console.log("user_id", user_id);
-        let oder = await models.findOne({ user_id });
+        let _id = data._id;
+        let statusPay = data.statusPay
+        let statusOder = data.statusOder
+        let oder = await models.findOne({ _id });
 
         if (!oder) {
             throw new Error('Không tìm thấy đơn hàng');
@@ -97,5 +100,35 @@ exports.updateOder = async (user_id, statusPay, statusOder) => {
         return Promise.reject({ show: true, message: "Có lỗi xảy ra, xin vui lòng thử lại" });
     }
 }
+
+exports.sendMail = async (data) => {
+    try {
+        console.log(data);
+        // Tạo transporter
+        const transporter = nodemailer.createTransport({
+            service: 'gmail',
+            auth: {
+                user: 'huumanhk129@gmail.com',
+                pass: 'manh29062001',
+            },
+        });
+
+        // Tạo options cho email
+        const mailOptions = {
+            from: 'huumanhk129@gmail.com',
+            to: data,
+            subject: 'Thông báo đặt hàng',
+            text: 'Đơn hàng của bạn đã được đặt thành công !',
+        };
+
+        // Gửi email
+        const info = await transporter.sendMail(mailOptions);
+        console.log('Email sent:', info.response);
+        return info; // Trả về thông tin về email đã gửi nếu cần thiết
+    } catch (error) {
+        console.error('Error occurred:', error);
+        throw error; // Ném lỗi để xử lý ở nơi gọi hàm nếu cần thiết
+    }
+};
 
 

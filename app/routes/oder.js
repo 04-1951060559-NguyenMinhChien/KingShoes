@@ -32,4 +32,13 @@ module.exports = function (app, passport) {
         })
     })
 
+    app.put('/oders', (req, res) => {
+        console.log("data updateOder", req.body);
+        oders.updateOder(req.body).then((ok) => {
+            resp.sendOK(res, req, ok)
+        }).catch(function (err) {
+            resp.throws(res, req, err)
+        })
+    })
+
 }
