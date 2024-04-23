@@ -4,7 +4,7 @@ let cart = require('../../models/cart');
 var nodemailer = require("nodemailer");
 // const Joi = require('joi');
 // const Promisebb = require('bluebird')
-// const _ = require('lodash');
+const _ = require('underscore');
 // const bcrypt = require('bcryptjs')
 // const jwtConf = require('../../../config/jwt');
 // var jwt = require('jsonwebtoken');
@@ -22,22 +22,22 @@ exports.createOder = async (data) => {
             product_id: item.product_id,
             quantity: item.quantity
         }));
-
+        for (const { product_id, quantity } of productIdsWithQuantity) {
+            const product = await Product.findById(product_id);
+            if (!product) {
+                return Promise.reject({ show: true, message: `Sản phẩm với id ${product_id} không tồn tại` });
+            }
+            if (product.numberInStock < quantity) {
+                return Promise.reject({ show: true, message: `Không đủ số lượng sản phẩm với tên ${product.name}` });
+            }
+            product.numberInStock -= quantity;
+            await product.save();
+        }
         let created = await models.create({ user_id, product: productIdsWithQuantity, name, totalPrice, phone, note, email, content, address, ward, district, province, typePay, statusPay, statusOder });
         if (created) {
+            console.log("created", created);
             await cart.deleteOne({ user_id });
             this.sendMail(data)
-            for (const { product_id, quantity } of productIdsWithQuantity) {
-                const product = await Product.findById(product_id);
-                if (!product) {
-                    return Promise.reject({ show: true, message: `Sản phẩm với id ${product_id} không tồn tại` });
-                }
-                if (product.numberInStock < quantity) {
-                    return Promise.reject({ show: true, message: `Không đủ số lượng sản phẩm với tên ${product.name}` });
-                }
-                product.numberInStock -= quantity;
-                await product.save();
-            }
         }
         return Promise.resolve(created);
     } catch (error) {
@@ -106,7 +106,7 @@ exports.updateOder = async (data) => {
 exports.sendMail = async (data) => {
     try {
         console.log("sendMail 1 ");
-        const priceAll = await this.formatPrice(data.totalPrice)
+        const priceAll = await _.formatPrice(data.totalPrice)
         // Tạo transporter
         const transporter = nodemailer.createTransport({
             service: 'gmail',
@@ -135,9 +135,3 @@ exports.sendMail = async (data) => {
 };
 
 
-exports.formatPrice = async (price) => {
-    return new Intl.NumberFormat("vi-VN", {
-        style: "currency",
-        currency: "VND",
-    }).format(price);
-}

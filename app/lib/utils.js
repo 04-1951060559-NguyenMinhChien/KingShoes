@@ -612,3 +612,9 @@ exports.capitalize = function (cityName) {
         return cityName;
     }
 }
+exports.formatPrice = async (price) => {
+    return new Intl.NumberFormat("vi-VN", {
+        style: "currency",
+        currency: "VND",
+    }).format(price);
+}
