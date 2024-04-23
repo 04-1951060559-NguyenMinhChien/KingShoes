@@ -8,6 +8,7 @@ var user = require('./user');
 var size = require('./size');
 var cart = require('./cart');
 var oder = require('./oder');
+var statistical = require('./statistical');
 
 module.exports = function (app) {
 
@@ -28,5 +29,6 @@ module.exports = function (app) {
     size(app)
     cart(app)
     oder(app)
+    statistical(app)
 
 };
