@@ -100,21 +100,8 @@ exports.allUser = async () => {
 }
 exports.updateUser = async (id, body = {}) => {
     try {
-        const image = req.file.path; // Đường dẫn của hình ảnh đã được lưu trữ trong req.file
-        body.image = image;
-        // console.log("non the nho", data);
-        const user = await models.findById(id);
-        if (!user) {
-            return Promise.reject({ show: true, message: "Không tìm thấy sản phẩm để xóa" });
-        }
-
-        const imagePathDelete = user.image;
-        const imagePathFull = `D:\\MyProject\\KingShoes\\public` + imagePathDelete;
-        if (fs.existsSync(imagePathFull)) {
-            fs.unlinkSync(imagePathFull); // Xóa hình ảnh từ thư mục
-        }
-        let updated = await models.findByIdAndUpdate(id, body, { new: true });
-        return Promisebb.resolve(updated);
+        let updated = await models.findByIdAndUpdate(id, body);
+        return Promise.resolve(updated);
     } catch (error) {
         // Bắt và xử lý lỗi nếu có
         console.error("Error updating User:", error);
