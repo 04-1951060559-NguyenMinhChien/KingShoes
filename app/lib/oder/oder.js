@@ -51,11 +51,11 @@ exports.createOder = async (data) => {
 exports.allOderByUser = async (user_id) => {
     try {
         let data = await models.find({ user_id })
-            .populate('user_id') // Lấy thông tin của người dùng nếu cần
+            .populate('user_id')
             .populate({
-                path: 'product.product_id', // Đường dẫn đến trường mảng product và trường product_id bên trong mảng đó
-            });
-
+                path: 'product.product_id'
+            })
+            .sort({ createdAt: -1 }); // Sắp xếp tăng dần, nếu muốn giảm dần sử dụng -1    
         return Promise.resolve(data);
     } catch (error) {
         console.log(error);
@@ -69,7 +69,7 @@ exports.allOder = async () => {
             .populate('user_id') // Lấy thông tin của người dùng nếu cần
             .populate({
                 path: 'product.product_id', // Đường dẫn đến trường mảng product và trường product_id bên trong mảng đó
-            });
+            }).sort({ createdAt: -1 }); // Sắp xếp tăng dần, nếu muốn giảm dần sử dụng -1    
 
         return Promise.resolve(data);
     } catch (error) {
@@ -133,5 +133,36 @@ exports.sendMail = async (data) => {
         throw error; // Ném lỗi để xử lý ở nơi gọi hàm nếu cần thiết
     }
 };
+
+exports.SearchOder = async (search) => {
+    try {
+        // Kiểm tra và chuyển đổi dữ liệu nếu cần
+        // if (typeof search !== 'string') {
+        //     search = search.data.toString();
+        // }
+
+        // Tìm kiếm trong cơ sở dữ liệu
+        let result = await models.find({
+            $or: [
+                { name: { $regex: search.data, $options: 'i' } },
+                { phone: { $regex: search.data, $options: 'i' } },
+                { email: { $regex: search.data, $options: 'i' } },
+                // Các trường tìm kiếm khác nếu cần
+            ]
+        }).sort({ createdAt: -1 }); // Sắp xếp tăng dần, nếu muốn giảm dần sử dụng -1    
+
+        // Kiểm tra kết quả trả về
+        if (result.length === 0) {
+            return Promise.reject({ show: true, message: "Có lỗi xảy ra, xin vui lòng thử lại" });
+        }
+
+        // Trả về kết quả cho người dùng
+        return Promise.resolve(result);
+    } catch (error) {
+        // Xử lý lỗi
+        console.log(error);
+        return Promise.reject({ show: true, message: "Có lỗi xảy ra, xin vui lòng thử lại" });
+    }
+}
 
 

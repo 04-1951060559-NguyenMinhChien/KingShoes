@@ -40,5 +40,12 @@ module.exports = function (app, passport) {
             resp.throws(res, req, err)
         })
     })
-
+    // Tìm kiếm sản phẩm
+    app.post('/oders/search/:data', (req, res) => {
+        products.SearchOder(req.params).then((ok) => {
+            resp.sendOK(res, req, ok)
+        }).catch(function (err) {
+            resp.throws(res, req, err)
+        })
+    });
 }

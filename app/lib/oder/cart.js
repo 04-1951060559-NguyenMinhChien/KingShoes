@@ -49,7 +49,7 @@ exports.allCart = async (user_id) => {
                 .populate('user_id') // Lấy thông tin của người dùng nếu cần
                 .populate({
                     path: 'product.product_id', // Đường dẫn đến trường mảng product và trường product_id bên trong mảng đó
-                });
+                }).sort({ createdAt: -1 }); // Sắp xếp tăng dần, nếu muốn giảm dần sử dụng -1    
             return Promise.resolve(data);
         } else {
             let data = []
@@ -62,7 +62,6 @@ exports.allCart = async (user_id) => {
     }
 }
 
-const mongoose = require('mongoose');
 
 exports.updateCart = async (user_id, product) => {
     try {

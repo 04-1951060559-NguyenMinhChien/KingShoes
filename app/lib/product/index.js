@@ -50,8 +50,8 @@ exports.allProduct = async () => {
         let data = await models.find()
             .populate('brand_id', 'name') // Lấy ra trường 'name' từ collection 'Brands' tương ứng với 'brand_id'
             .populate('size_id', 'name') // Lấy ra trường 'name' từ collection 'Sizes' tương ứng với 'size_id'
-            .exec(); // Thực thi truy vấn và trả về kết quả
-
+            .exec() // Thực thi truy vấn và trả về kết quả
+            .sort({ createdAt: -1 }); // Sắp xếp tăng dần, nếu muốn giảm dần sử dụng -1    
         // In ra dữ liệu trả về
         // console.log(data);
 
@@ -87,8 +87,8 @@ exports.ProductByBrand = async (brand_id) => {
         let data = await models.find({ brand_id: brand_id })
             .populate('brand_id', 'name') // Lấy ra trường 'name' từ collection 'Brands' tương ứng với 'brand_id'
             .populate('size_id', 'name') // Lấy ra trường 'name' từ collection 'Sizes' tương ứng với 'size_id'
-            .exec(); // Thực thi truy vấn và trả về kết quả
-
+            .exec() // Thực thi truy vấn và trả về kết quả
+            .sort({ createdAt: -1 }); // Sắp xếp tăng dần, nếu muốn giảm dần sử dụng -1    
         // In ra dữ liệu trả về
         console.log(data);
 
@@ -164,7 +164,7 @@ exports.SearchProduct = async (search) => {
                 { name: { $regex: search.data, $options: 'i' } },
                 // Các trường tìm kiếm khác nếu cần
             ]
-        });
+        }).sort({ createdAt: -1 }); // Sắp xếp tăng dần, nếu muốn giảm dần sử dụng -1    
 
         // Kiểm tra kết quả trả về
         if (result.length === 0) {

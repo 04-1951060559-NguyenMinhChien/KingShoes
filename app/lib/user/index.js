@@ -90,7 +90,7 @@ exports.Login = async (req, body = {}) => {
 
 exports.allUser = async () => {
     try {
-        let data = await models.find()
+        let data = await models.find().sort({ createdAt: -1 }); // Sắp xếp tăng dần, nếu muốn giảm dần sử dụng -1    
         console.log("data");
         return Promise.resolve(data);
     } catch (error) {
@@ -132,7 +132,7 @@ exports.SearchUser = async (search) => {
                 { role: { $regex: search, $options: 'i' } },
                 { email: { $regex: search, $options: 'i' } },
             ]
-        });
+        }).sort({ createdAt: -1 }); // Sắp xếp tăng dần, nếu muốn giảm dần sử dụng -1    
 
         // Kiểm tra kết quả trả về
         if (result.length === 0) {

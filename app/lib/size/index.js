@@ -39,7 +39,7 @@ exports.createSize = async (data, body = {}) => {
 
 exports.allSize = async () => {
     try {
-        let data = await models.find()
+        let data = await models.find().sort({ createdAt: -1 }); // Sắp xếp tăng dần, nếu muốn giảm dần sử dụng -1    
         console.log("data");
         return Promise.resolve(data);
     } catch (error) {
@@ -49,7 +49,7 @@ exports.allSize = async () => {
 }
 exports.allSizeOn = async () => {
     try {
-        let data = await models.find({ status: "1" });
+        let data = await models.find({ status: "1" }).sort({ createdAt: -1 }); // Sắp xếp tăng dần, nếu muốn giảm dần sử dụng -1    
         console.log("data");
         return Promise.resolve(data);
     } catch (error) {
