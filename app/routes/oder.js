@@ -15,8 +15,8 @@ module.exports = function (app, passport) {
     }),
         // Đọc danh sách 
         app.get('/oders', (req, res) => {
-            console.log("data allOder", req.query.status);
-            oders.allOder(req.query.status).then((ok) => {
+            console.log("data allOder", req.query.statusOder);
+            oders.allOder(req.query.statusOder).then((ok) => {
                 resp.sendOK(res, req, ok)
             }).catch(function (err) {
                 resp.throws(res, req, err)

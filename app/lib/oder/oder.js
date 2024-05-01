@@ -65,11 +65,11 @@ exports.allOderByUser = async (user_id) => {
 
 exports.allOder = async (data) => {
     try {
-        let status
-        let data
-        if (data != null) {
-            status = data
-            data = await models.find({ status })
+        let statusOder
+        if (data) {
+            statusOder = data
+            console.log(statusOder);
+            data = await models.find({ statusOder: statusOder })
                 .populate('user_id') // Lấy thông tin của người dùng nếu cần
                 .populate({
                     path: 'product.product_id', // Đường dẫn đến trường mảng product và trường product_id bên trong mảng đó

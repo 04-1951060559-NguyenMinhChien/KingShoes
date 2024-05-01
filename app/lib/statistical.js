@@ -40,11 +40,13 @@ exports.allOrder = async (type) => {
                     createdAt: {
                         $gte: startDate.toDate(),
                         $lte: endDate.toDate()
-                    }
+                    },
+                    statusOder: { $nin: ["0", "1", "2", "4", "5"] } // Loại bỏ trường hợp statusOder bằng 5
+
                 }
+
             }
         ];
-
         if (type === 'year') {
             agg.push(
                 {
