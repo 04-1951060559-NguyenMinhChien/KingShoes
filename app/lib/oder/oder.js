@@ -74,12 +74,13 @@ exports.allOder = async (data) => {
                 .populate({
                     path: 'product.product_id', // Đường dẫn đến trường mảng product và trường product_id bên trong mảng đó
                 }).sort({ createdAt: -1 }); // Sắp xếp tăng dần, nếu muốn giảm dần sử dụng -1    
+        } else {
+            data = await models.find()
+                .populate('user_id') // Lấy thông tin của người dùng nếu cần
+                .populate({
+                    path: 'product.product_id', // Đường dẫn đến trường mảng product và trường product_id bên trong mảng đó
+                }).sort({ createdAt: -1 }); // Sắp xếp tăng dần, nếu muốn giảm dần sử dụng -1    
         }
-        data = await models.find()
-            .populate('user_id') // Lấy thông tin của người dùng nếu cần
-            .populate({
-                path: 'product.product_id', // Đường dẫn đến trường mảng product và trường product_id bên trong mảng đó
-            }).sort({ createdAt: -1 }); // Sắp xếp tăng dần, nếu muốn giảm dần sử dụng -1    
 
         return Promise.resolve(data);
     } catch (error) {
