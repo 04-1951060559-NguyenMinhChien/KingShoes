@@ -1,4 +1,5 @@
 let models = require('../../models/cart');
+let Product = require('../../models/products');
 
 // const Joi = require('joi');
 // const Promisebb = require('bluebird')
@@ -21,6 +22,17 @@ exports.createCart = async (data) => {
             product_id: item.product_id,
             quantity: item.quantity
         }));
+        for (const { product_id, quantity } of productIdsWithQuantity) {
+            const product = await Product.findById(product_id);
+            if (!product) {
+                return Promise.reject({ show: true, message: `Sản phẩm với id ${product_id} không tồn tại` });
+            }
+            if (product.numberInStock < quantity) {
+                return Promise.reject({ show: true, message: `Không đủ số lượng sản phẩm với tên ${product.name}` });
+            }
+            product.numberInStock -= quantity;
+            await product.save();
+        }
         if (user_id) {
             // Kiểm tra xem giỏ hàng có tồn tại không
             let checkExists1 = await models.findOne({ user_id });
@@ -36,7 +48,7 @@ exports.createCart = async (data) => {
         return Promise.resolve(created); // Trả về thông tin giỏ hàng đã tạo mới
     } catch (error) {
         // Bắt và xử lý lỗi nếu có
-        console.error("Error creating Cart:", error);
+        // console.error("Error creating Cart:", error);
         return Promise.reject({ show: true, message: "Có lỗi xảy ra, xin vui lòng thử lại" });
     }
 }
@@ -50,6 +62,21 @@ exports.allCart = async (user_id) => {
                 .populate({
                     path: 'product.product_id', // Đường dẫn đến trường mảng product và trường product_id bên trong mảng đó
                 }).sort({ createdAt: -1 }); // Sắp xếp tăng dần, nếu muốn giảm dần sử dụng -1    
+            // data = data.product
+            // console.log("dsadsadsadsa", JSON.stringify(data));
+            for (let i = 0; i < data.length; i++) {
+                for (let j = 0; j < data[i].product.length; j++) {
+                    let productId = data[i].product[j].product_id;
+                    let product = await Product.findById(productId); // Tìm kiếm sản phẩm trong cơ sở dữ liệu Product
+                    if (product) {
+                        data[i].product[j].product = product; // Gán sản phẩm vào trường product
+                    }
+                }
+            }
+            data.forEach(order => {
+                order.product = order.product.filter(product => product.product_id !== null);
+            });
+            // console.log("Updated Data:", data);
             return Promise.resolve(data);
         } else {
             let data = []
@@ -102,7 +129,22 @@ exports.deleteCartItem = async (cartId, productId) => {
         if (!cart) {
             throw new Error('Không tìm thấy giỏ hàng');
         }
-
+        const productIdsWithQuantity = cart.product.map(item => ({
+            product_id: item.product_id,
+            quantity: item.quantity
+        }));
+        // console.log("productIdsWithQuantity", productIdsWithQuantity);
+        for (const { product_id, quantity } of productIdsWithQuantity) {
+            const product = await Product.findById(product_id);
+            // console.log("product", product);
+            if (product) {
+                numberInStock = new Number(product.numberInStock)
+                console.log(numberInStock);
+                numberInStock += quantity;
+                product.numberInStock = numberInStock
+                await product.save();
+            }
+        }
         // Loại bỏ sản phẩm cụ thể khỏi mảng "product"
         cart.product = cart.product.filter(item => item.product_id.toString() !== productId.toString());
 
