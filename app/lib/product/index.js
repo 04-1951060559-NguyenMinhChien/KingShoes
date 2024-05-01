@@ -82,7 +82,7 @@ exports.ProductById = async (id) => {
 // Hiển thị sản phầm theo nhãn hiệu
 exports.ProductByBrand = async (brand_id) => {
     try {
-        console.log(brand_id);
+        console.log("brand_id", brand_id);
         // Tìm kiếm các sản phẩm dựa trên brand_id
         let data = await models.find({ brand_id: brand_id })
             .populate('brand_id', 'name') // Lấy ra trường 'name' từ collection 'Brands' tương ứng với 'brand_id'
@@ -90,7 +90,7 @@ exports.ProductByBrand = async (brand_id) => {
             .sort({ createdAt: -1 }) // Sắp xếp tăng dần, nếu muốn giảm dần sử dụng -1    
             .exec() // Thực thi truy vấn và trả về kết quả
         // In ra dữ liệu trả về
-        console.log(data);
+        console.log("ProductByBrand", data);
 
         // Trả về kết quả cho người dùng
         return Promise.resolve(data);
