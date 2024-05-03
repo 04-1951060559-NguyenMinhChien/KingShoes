@@ -22,17 +22,17 @@ exports.createCart = async (data) => {
             product_id: item.product_id,
             quantity: item.quantity
         }));
-        for (const { product_id, quantity } of productIdsWithQuantity) {
-            const product = await Product.findById(product_id);
-            if (!product) {
-                return Promise.reject({ show: true, message: `Sản phẩm với id ${product_id} không tồn tại` });
-            }
-            if (product.numberInStock < quantity) {
-                return Promise.reject({ show: true, message: `Không đủ số lượng sản phẩm với tên ${product.name}` });
-            }
-            product.numberInStock -= quantity;
-            await product.save();
-        }
+        // for (const { product_id, quantity } of productIdsWithQuantity) {
+        //     const product = await Product.findById(product_id);
+        //     if (!product) {
+        //         return Promise.reject({ show: true, message: `Sản phẩm với id ${product_id} không tồn tại` });
+        //     }
+        //     if (product.numberInStock < quantity) {
+        //         return Promise.reject({ show: true, message: `Không đủ số lượng sản phẩm với tên ${product.name}` });
+        //     }
+        //     product.numberInStock -= quantity;
+        //     await product.save();
+        // }
         if (user_id) {
             // Kiểm tra xem giỏ hàng có tồn tại không
             let checkExists1 = await models.findOne({ user_id });
@@ -134,17 +134,17 @@ exports.deleteCartItem = async (cartId, productId) => {
             quantity: item.quantity
         }));
         // console.log("productIdsWithQuantity", productIdsWithQuantity);
-        for (const { product_id, quantity } of productIdsWithQuantity) {
-            const product = await Product.findById(product_id);
-            // console.log("product", product);
-            if (product) {
-                numberInStock = new Number(product.numberInStock)
-                console.log(numberInStock);
-                numberInStock += quantity;
-                product.numberInStock = numberInStock
-                await product.save();
-            }
-        }
+        // for (const { product_id, quantity } of productIdsWithQuantity) {
+        //     const product = await Product.findById(product_id);
+        //     // console.log("product", product);
+        //     if (product) {
+        //         numberInStock = new Number(product.numberInStock)
+        //         console.log(numberInStock);
+        //         numberInStock += quantity;
+        //         product.numberInStock = numberInStock
+        //         await product.save();
+        //     }
+        // }
         // Loại bỏ sản phẩm cụ thể khỏi mảng "product"
         cart.product = cart.product.filter(item => item.product_id.toString() !== productId.toString());
 

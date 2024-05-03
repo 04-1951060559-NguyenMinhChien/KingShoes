@@ -1,5 +1,5 @@
 let models = require('../../models/oder');
-// let Product = require('../../models/products');
+let Product = require('../../models/products');
 let cart = require('../../models/cart');
 var nodemailer = require("nodemailer");
 // const Joi = require('joi');
@@ -22,17 +22,17 @@ exports.createOder = async (data) => {
             product_id: item.product_id,
             quantity: item.quantity
         }));
-        // for (const { product_id, quantity } of productIdsWithQuantity) {
-        //     const product = await Product.findById(product_id);
-        //     if (!product) {
-        //         return Promise.reject({ show: true, message: `Sản phẩm với id ${product_id} không tồn tại` });
-        //     }
-        //     if (product.numberInStock < quantity) {
-        //         return Promise.reject({ show: true, message: `Không đủ số lượng sản phẩm với tên ${product.name}` });
-        //     }
-        //     product.numberInStock -= quantity;
-        //     await product.save();
-        // }
+        for (const { product_id, quantity } of productIdsWithQuantity) {
+            const product = await Product.findById(product_id);
+            if (!product) {
+                return Promise.reject({ show: true, message: `Sản phẩm với id ${product_id} không tồn tại` });
+            }
+            if (product.numberInStock < quantity) {
+                return Promise.reject({ show: true, message: `Không đủ số lượng sản phẩm với tên ${product.name}` });
+            }
+            product.numberInStock -= quantity;
+            await product.save();
+        }
         let created = await models.create({ user_id, product: productIdsWithQuantity, name, totalPrice, phone, note, email, content, address, ward, district, province, typePay, statusPay, statusOder });
         if (created) {
             console.log("created", created);
@@ -102,8 +102,26 @@ exports.updateOder = async (data) => {
         if (statusPay) {
             oder.statusPay = statusPay;
         } if (statusOder) {
+            console.log(oder);
             oder.statusOder = statusOder;
-
+            if (statusOder === "5") {
+                const productIdsWithQuantity = oder.product.map(item => ({
+                    product_id: item.product_id,
+                    quantity: item.quantity
+                }));
+                console.log("productIdsWithQuantity", productIdsWithQuantity);
+                for (const { product_id, quantity } of productIdsWithQuantity) {
+                    const product = await Product.findById(product_id);
+                    // console.log("product", product);
+                    if (product) {
+                        numberInStock = new Number(product.numberInStock)
+                        console.log(numberInStock);
+                        numberInStock += quantity;
+                        product.numberInStock = numberInStock
+                        await product.save();
+                    }
+                }
+            }
         }
         let updatedOder = await oder.save();
 
